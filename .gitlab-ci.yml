@@ -1,0 +1,59 @@
+image: node:18
+
+workflow:
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+    
+stages:  
+  - build
+  - sonarqube-check
+  - deploy
+  
+build:
+  stage: build
+  script:
+    - npm install
+    - npm run build
+    - apt-get update && apt-get install -y zip
+    - zip -r "artifact.zip" build/
+    - apt-get update && apt-get install -y maven
+  artifacts:
+    paths:
+      - artifact.zip
+  tags:
+    - runner|
+
+sonarqube-check:
+  stage: sonarqube-check
+  image: 
+    name: sonarsource/sonar-scanner-cli:latest
+    entrypoint: [""]
+  variables:
+    SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
+    GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
+  cache:
+    key: "${CI_JOB_NAME}"
+    paths:
+      - .sonar/cache
+  script: 
+    - sonar-scanner
+  allow_failure: true
+  tags:
+    - runner|
+
+deploy:
+  stage: deploy
+  script:
+    - apt-get update && apt-get install -y git
+    - export NEXT_VERSION=$(echo $CI_COMMIT_SHA | cut -c 1-8)
+    - curl -v -u conecta:Koke1988 --upload-file "./artifact.zip" "http://10.128.0.18:8081/repository/repoapp/com/app/${NEXT_VERSION}/artifact_${NEXT_VERSION}.zip"
+    - git clone http://root:glpat-ZYs-7mE-zkxjAyNGYgbw@10.128.0.18/root/rickymortis.git
+    - cd rickymortis
+    - git checkout main
+    - git tag "${NEXT_VERSION}"
+    - git push origin "${NEXT_VERSION}"
+    
+  tags:
+    - runner|
+
+
