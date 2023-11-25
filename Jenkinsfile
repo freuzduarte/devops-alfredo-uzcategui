@@ -18,7 +18,7 @@ pipeline {
                     println 'Construyendo la imagen'
                     sh "docker build -t devops-dockerapp:${BUILD_NUMBER} ."
                     sh """
-                    docker run devops-dockerapp:${BUILD_NUMBER} -p 3000:3000
+                    docker run -p 8080:80 devops-dockerapp:${BUILD_NUMBER}
                     """
                 }
             }

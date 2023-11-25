@@ -7,9 +7,7 @@ COPY . .
 RUN npm run build
 
 # Segunda etapa: Ejecución de la aplicación
-FROM node:lts-alpine
-WORKDIR /app
-COPY --from=build /app/build ./build
-COPY package*.json ./
-RUN npm install --only=production
-CMD ["node", "build/main.js"]
+FROM nginx:1.25.3-alpine
+COPY --from=build /app/build /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
