@@ -11,10 +11,10 @@ pipeline {
         }
         stage('Construir una Imagen') {
             steps {
-                if (!fileExists('Dockerfile')) {
-                    println 'No existe el Dockerfile'
-                }
                 script {
+                    if (!fileExists('Dockerfile')) {
+                        println 'No existe el Dockerfile'
+                    }
                     println 'Construyendo la imagen'
                     sh "docker build -t devops-dockerapp:${BUILD_NUMBER} ."
                     sh """
