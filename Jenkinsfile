@@ -1,6 +1,9 @@
 /* groovylint-disable CompileStatic, FileEndsWithoutNewline */
 pipeline {
     agent any
+    environment {
+        DOCKER_IMAGE_TAG = "freuzduarte/devops-dockerapp:${BUILD_NUMBER}"
+    }
     stages {
         stage('Starting') {
             steps {
@@ -19,10 +22,10 @@ pipeline {
                     }
                     // Procedemos a contruis la imagen de docker con el tag del numero de compilacion de jenkins
                     sh "docker build -t freuzduarte/devops-dockerapp:${BUILD_NUMBER} ."
-                    // Probando la ejecucion del docker
-                    // sh """
-                    // docker run -p 8080:80 devops-dockerapp:${BUILD_NUMBER}
-                    // """
+                // Probando la ejecucion del docker
+                // sh """
+                // docker run -p 8080:80 devops-dockerapp:${BUILD_NUMBER}
+                // """
                 }
             }
         }
@@ -36,6 +39,15 @@ pipeline {
 
                     // Procedemos a subir la imagen a docker hub
                     sh "docker push freuzduarte/devops-dockerapp:${BUILD_NUMBER}"
+                }
+            }
+        }
+        stage('Kubernetes') {
+            steps {
+                script {
+                    println 'Configurando Kubernetes'
+                    sh "sed -i 's|image: freuzduarte/devops-dockerapp:.*|image: ${DOCKER_IMAGE_TAG}|' kubernetes.yaml"
+                    sh 'kubectl apply -f appdevops.yaml'
                 }
             }
         }
