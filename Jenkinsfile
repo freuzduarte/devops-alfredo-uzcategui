@@ -47,7 +47,7 @@ pipeline {
                 script {
                     println 'Configurando Kubernetes'
                     sh "sed -i 's|image: freuzduarte/devops-dockerapp:.*|image: ${DOCKER_IMAGE_TAG}|' appdevops.yaml"
-                    sh 'kubectl apply -f appdevops.yaml'
+                    // sh 'kubectl apply -f appdevops.yaml'
                 }
             }
         }
