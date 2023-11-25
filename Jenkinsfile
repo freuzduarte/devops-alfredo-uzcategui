@@ -9,7 +9,7 @@ pipeline {
                 }
             }
         }
-        stage(name: 'Build') {
+        stage('Build') {
             steps {
                 script {
                     println 'Building Project'
