@@ -18,7 +18,7 @@ pipeline {
                         println 'No existe el Dockerfile'
                     }
                     // Procedemos a contruis la imagen de docker con el tag del numero de compilacion de jenkins
-                    sh "docker build -t devops-dockerapp:${BUILD_NUMBER} ."
+                    sh "docker build -t freuzduarte/devops-dockerapp:${BUILD_NUMBER} ."
                     // Probando la ejecucion del docker
                     // sh """
                     // docker run -p 8080:80 devops-dockerapp:${BUILD_NUMBER}
@@ -35,7 +35,7 @@ pipeline {
                     }
 
                     // Procedemos a subir la imagen a docker hub
-                    sh "docker push devops-dockerapp:${BUILD_NUMBER}"
+                    sh "docker push freuzduarte/devops-dockerapp:${BUILD_NUMBER}"
                 }
             }
         }
