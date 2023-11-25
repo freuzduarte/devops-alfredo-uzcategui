@@ -9,10 +9,24 @@ pipeline {
                 }
             }
         }
-        stage('Build') {
+        stage('Construir una Imagen') {
+            steps {
+                if (!fileExists('Dockerfile')) {
+                    println 'No existe el Dockerfile'
+                }
+                script {
+                    println 'Construyendo la imagen'
+                    sh "docker build -t devops-dockerapp:${BUILD_NUMBER} ."
+                    sh """
+                    docker run devops-dockerapp:${BUILD_NUMBER} -p 3000:3000
+                    """
+                }
+            }
+        }
+        stage('Desplegar la Imagen') {
             steps {
                 script {
-                    println 'Building Project'
+                    println 'Desplegando la imagen'
                 }
             }
         }
