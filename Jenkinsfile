@@ -30,7 +30,7 @@ pipeline {
             steps {
                 script {
                     println 'Subiendo el contenedor docker al repositorio DOCKERHUB'
-                    withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'USER', usernameVariable: 'PASS')]) {
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
                         sh "docker login -u ${USER} -p ${PASS}"
                     }
 
